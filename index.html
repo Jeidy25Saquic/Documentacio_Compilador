@@ -494,11 +494,11 @@ h2, .section-title {
             <div class="hero-grid">
                 <div class="hero-card">
                     <strong>DESARROLLADORES</strong><br>
-                    Juan Pastor · Jennifer Saquic · Pablo Zurigo
+                    Juan Pastor · Jennifer Saquic · Pablo Zuñiga
                 </div>
                 <div class="hero-card">
                     <strong>CURSO / DOCENTE</strong><br>
-                    Compiladores · Ing. Jorge Tallo
+                    Compiladores · Ing. Jorge Tello
                 </div>
                 <div class="hero-card">
                     <strong>FECHA</strong><br>
@@ -710,21 +710,21 @@ expr_fecha      → fecha | HOY | HOY+numero DIA | FIN.MES | PROX.LUN</pre>
             <div class="image-gallery">
                 <div class="compiler-img">
                     <div class="img-placeholder">
-                        <i class="fas fa-terminal" style="font-size: 4rem;"></i>
+                         <img src="docs/lexico.jpg" alt="Análisis Léxico" style="width: 500px; height: 200px;">
                     </div>
                     <p><strong>Análisis Léxico</strong> — Tokenización y detección de errores</p>
                 </div>
                 <div class="compiler-img">
                     <div class="img-placeholder">
-                        <i class="fas fa-diagram-project" style="font-size: 4rem;"></i>
+                        <img src="docs/Sintactico.jpg" alt="Análisis Sintáctico" style="width: 500px; height: 200px;">
                     </div>
-                    <p><strong>Árbol Sintáctico (AST)</strong> — Representación jerárquica</p>
+                    <p><strong>Analizador Sintáctico </strong> — Representación jerárquica</p>
                 </div>
                 <div class="compiler-img">
                     <div class="img-placeholder">
-                        <i class="fas fa-table" style="font-size: 4rem;"></i>
+                        <img src="docs/Semantico.jpg" alt="Análisis Semántico" style="width: 500px; height: 200px;">
                     </div>
-                    <p><strong>Tabla de Símbolos</strong> — Gestión de contexto</p>
+                    <p><strong>Analizador Semántico</strong> — Gestión de contexto</p>
                 </div>
             </div>
 
@@ -758,12 +758,12 @@ Paso 05 [AGREGAR   ] [LISTA] 'tareas_urgentes' creada, Línea=8</pre>
             <h2 class="section-title"><i class="fas fa-code-branch"></i> Repositorio del Proyecto</h2>
             <p>El código fuente completo del compilador está disponible en GitHub:</p>
             <ul style="margin-left: 2rem; margin-bottom: 1.5rem; margin-top: 0.5rem;">
-                <li><code class="inline-code">lexer.py</code> — Analizador léxico con tabla de tokens</li>
-                <li><code class="inline-code">parser.py</code> — Parser descendente recursivo y AST</li>
-                <li><code class="inline-code">semantic.py</code> — Analizador semántico y tabla de símbolos</li>
+                <li><code class="inline-code">lexico.py</code> — Analizador léxico con tabla de tokens</li>
+                <li><code class="inline-code">sintactico.py</code> — Parser descendente recursivo y AST</li>
+                <li><code class="inline-code">semantico.py</code> — Analizador semántico y tabla de símbolos</li>
                 <li><code class="inline-code">tokens.json</code> — Definición de palabras reservadas</li>
             </ul>
-            <a href="#" class="btn"><i class="fab fa-github"></i> Ver en GitHub</a>
+            <a href="https://github.com/JuanPastor777/Compilador" class="btn"><i class="fab fa-github"></i> Ver en GitHub</a>
         </div>
     </div>
 
