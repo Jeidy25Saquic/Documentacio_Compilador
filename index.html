@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor Tareas · Compilador | Gestión de Proyectos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9eef3 100%);
+            color: #1a2c3e;
+            line-height: 1.5;
+        }
+
+        /* Navigation - MEJORADA como la foto */
+        .navbar {
+            background: linear-gradient(135deg, #0b2b3b 0%, #123e52 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #47d6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #47d6ff;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero section - ESTILO FOTO */
+        .hero {
+            background: linear-gradient(135deg, #0b2b3b 0%, #1a4a62 100%);
+            border-radius: 2rem;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: #47d6ff;
+            color: #0b2b3b;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .hero-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* Section styling */
+        .section {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            border-left: 5px solid #47d6ff;
+            padding-left: 1rem;
+            color: #0b2b3b;
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem 0;
+            color: #1a4a62;
+        }
+
+        /* Cards grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: #f8fafc;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #0b2b3b;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .card-badge {
+            display: inline-block;
+            background: #47d6ff20;
+            color: #0b2b3b;
+            padding: 0.2rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* TABLAS ARREGLADAS - mucho más legibles */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #0b2b3b;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.2rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin: 1rem 0;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        .inline-code {
+            background: #e2e8f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.3rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #0b2b3b;
+        }
+
+        /* Error badges */
+        .error-badge {
+            background: #fee2e2;
+            color: #c2410c;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .success-badge {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Grid for two columns */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: #0b2b3b;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #47d6ff;
+            color: #0b2b3b;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: #2bc0f0;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #47d6ff;
+            color: #47d6ff;
+        }
+
+        .btn-outline:hover {
+            background: #47d6ff20;
+        }
+
+        /* Image gallery */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .compiler-img {
+            background: #f1f5f9;
+            border-radius: 1rem;
+            overflow: hidden;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s;
+        }
+
+        .compiler-img:hover {
+            transform: scale(1.02);
+        }
+
+        .compiler-img img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #0b2b3b, #1a4a62);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .compiler-img .img-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #0b2b3b, #1a4a62);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .compiler-img p {
+            padding: 0.75rem;
+            font-weight: 500;
+            background: white;
+        }
+
+        /* Modal para PDF */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 1000px;
+            height: 85%;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            background: #0b2b3b;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #47d6ff;
+        }
+
+        /* Animaciones scroll */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Convierte emojis a estilo monocromático */
+h1, h2, h3, p, .card {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Filtro para hacer emojis monocromáticos (opcional) */
+h2, .section-title {
+    font-variant-emoji: text;
+}
+.card i {
+    font-size: 2rem;
+    color: #1a4a62;
+    margin-bottom: 0.75rem;
+    display: inline-block;
+}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span>GESTOR TAREAS</span> • COMPILADOR
+            </div>
+            <div class="nav-links">
+                <a href="#inicio">Inicio</a>
+                <a href="#lenguaje">Lenguaje</a>
+                <a href="#lexico">Léxico</a>
+                <a href="#sintactico">Sintáctico</a>
+                <a href="#semantico">Semántico</a>
+                <a href="#tabla">Tabla</a>
+                <a href="#demo">Demo</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" id="inicio">
+        <!-- Hero Section -->
+        <div class="hero fade-up">
+            <div class="hero-badge">LENGUAJE ESPECÍFICO DE DOMINIO • COMPILADOR</div>
+            <h1>Lenguaje de Programación <br>para Gestión de Proyectos</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">Analizador léxico, sintáctico y semántico completo. Diseñado para automatizar flujos de trabajo colaborativos, control de tareas y evaluaciones.</p>
+            
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                <button id="openManualBtn" class="btn"><i class="fas fa-book-open"></i> Ver Manual de Usuario</button>
+                <button id="openWebBtn" class="btn btn-outline"><i class="fas fa-globe"></i>  Visitar Web del Compilador</button>
+            </div>
+
+            <div class="hero-grid">
+                <div class="hero-card">
+                    <strong>DESARROLLADORES</strong><br>
+                    Juan Pastor · Jennifer Saquic · Pablo Zurigo
+                </div>
+                <div class="hero-card">
+                    <strong>CURSO / DOCENTE</strong><br>
+                    Compiladores · Ing. Jorge Tallo
+                </div>
+                <div class="hero-card">
+                    <strong>FECHA</strong><br>
+                    Mayo 2026
+                </div>
+                <div class="hero-card">
+                    <strong>ARQUITECTURA</strong><br>
+                    Python 3.10+ · Parser Descendente
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduccion -->
+        <div class="section fade-up" id="lenguaje">
+            <h2 class="section-title">📖 Contexto </h2>
+            <p style="margin-bottom: 1rem;">Este lenguaje está diseñado específicamente para la gestión de proyectos colaborativos. Permite crear usuarios, grupos, tareas, subtareas, listas, mensajes, notificaciones y módulos importables, todo con una sintaxis clara y consistente. El compilador analiza el código en tres fases (léxico, sintáctico y semántico), validando reglas de negocio como existencia de usuarios, sesiones activas, calificaciones en rango y ausencia de duplicados. Desarrollado en Python 3.10+, está pensado para equipos de ingeniería que buscan automatizar flujos de trabajo y mantener el control total de sus proyectos mediante código.</p>
+            <p><strong>Estructura básica:</strong> <code class="inline-code">COMANDO(argumento) MODIFICADOR(valor);</code></p>
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <h3><i class="fas fa-user-friends"></i> Usuarios y Grupos</h3>
+                    <p>REG.USR, ING.USR, CRE.GRP, ASIG.USR, ROL.COORD</p>
+                    <div class="card-badge">Registro y autenticación</div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-check-square"></i> Gestión de Tareas</h3>
+                    <p>CRE.TAR, CRE.TAR.IND, CRE.TAR.GRP, ASIG.TAR, DIV.TAR</p>
+                    <div class="card-badge">Asignación y división</div>
+                </div>
+                <div class="card">
+                    <h3>	<i class="fas fa-tags"></i> Etiquetas y Filtros</h3>
+                    <p>ETIQ.TAR, FILTRO.TAR, VISTA, Y, O, NO</p>
+                    <div class="card-badge">Organización dinámica</div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-bell"></i> Notificaciones</h3>
+                    <p>NOTIF.CUANDO, NOTIF.RECORDAR, SUSCRIBIR, ENV.MSG</p>
+                    <div class="card-badge">Alertas y eventos</div>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <pre>// Ejemplo completo de un programa válido
+IMPORT("proyecto_base.lan");
+
+REG.USR(juan, "Juan Pérez", ROL.COORD);
+CRE.GRP(Equipo Diseño) ASIG.USR(juan);
+
+CRE.TAR.GRP(Modelo ER) 
+    DES(Diseñar el diagrama entidad-relación)
+    FEC(PROX.LUN) PRI.ALT;
+
+ETIQ.TAR(Modelo ER) AGREGAR("urgente", "diseno");
+ASIG.TAR(Modelo ER) ASIG.USR(juan);
+
+REC.TAR(Revision semanal) CADA(SEMANA) HASTA(2026-12-31);
+
+NOTIF.CUANDO(EST.TAR(Modelo ER) == EST.FIN) ENVIAR(juan);
+FILTRO.TAR(PRI.ALT Y EST.PEN) VISTA("criticas");
+VER.VISTA("criticas");</pre>
+            </div>
+        </div>
+
+        <!-- Fase 1: Analizador Léxico -->
+        <div class="section fade-up" id="lexico">
+            <h2 class="section-title"><i class="fas fa-puzzle-piece"></i> Fase 1: Analizador Léxico</h2>
+            <p>El analizador léxico transforma el código fuente en una secuencia de tokens. Utiliza expresiones regulares y una tabla de palabras reservadas.</p>
+
+            <div class="two-columns">
+                <div>
+                    <h3 class="section-subtitle">Categorías de Tokens</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th>Categoría</th><th>Ejemplos</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Palabras Reservadas</td><td>REG.USR, CRE.TAR, PRI.ALT, EST.PEN</td></tr>
+                                <tr><td>Operadores Lógicos</td><td>Y, O, NO</td></tr>
+                                <tr><td>Operadores Comparación</td><td>==, !=, >, <, >=, <=</td></tr>
+                                <tr><td>Delimitadores</td><td>(, ), ;</td></tr>
+                                <tr><td>Fechas</td><td>2025-12-31, HOY, HOY+7DIAS, FIN.MES</td></tr>
+                                <tr><td>Horas</td><td>14:30</td></tr>
+                                <tr><td>Números</td><td>0-100</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="section-subtitle">Errores Léxicos</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Error</th><th>Descripción</th></tr></thead>
+                            <tbody>
+                                <tr><td><span class="error-badge">ERR_INV_DATE</span></td><td>Fecha inválida: 2025-02-30</td></tr>
+                                <tr><td><span class="error-badge">ERR_INV_TIME</span></td><td>Hora inválida: 25:61</td></tr>
+                                <tr><td><span class="error-badge">ERROR_LEXICO</span></td><td>Carácter no reconocido: @, #, $</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <pre>Entrada: REG.USR("jperez", "Juan Perez", ROL.COORD);
+
+Tokens generados:
+┌─────────────┬──────────────────────┐
+│ LEXEMA      │ TIPO DE TOKEN        │
+├─────────────┼──────────────────────┤
+│ REG.USR     │ PALABRA_RESERVADA    │
+│ (           │ DELIMITADOR          │
+│ "jperez"    │ CADENA               │
+│ ,           │ SIMBOLO              │
+│ "Juan Perez"│ CADENA               │
+│ ,           │ SIMBOLO              │
+│ ROL.COORD   │ PALABRA_RESERVADA    │
+│ )           │ DELIMITADOR          │
+│ ;           │ DELIMITADOR          │
+└─────────────┴──────────────────────┘</pre>
+            </div>
+        </div>
+
+        <!-- Fase 2: Analizador Sintáctico -->
+        <div class="section fade-up" id="sintactico">
+            <h2 class="section-title">🌳 Fase 2: Analizador Sintáctico</h2>
+            <p>Parser descendente recursivo que verifica la gramática del lenguaje y construye un Árbol Sintáctico Abstracto (AST).</p>
+
+            <div class="two-columns">
+                <div>
+                    <h3 class="section-subtitle">Gramática Principal</h3>
+                    <div class="code-block">
+                        <pre>programa        → { sentencia }
+sentencia       → instruccion "(" [argumentos] ")" [modificadores] ";"
+instruccion     → REG.USR | CRE.TAR | ASIG.TAR | CRE.GRP | ...
+argumentos      → (texto | cadena | numero) ["," argumentos]
+modificadores   → [DES(texto)] [FEC(expr_fecha)] [PRI.ALT|PRI.MED]
+expr_fecha      → fecha | HOY | HOY+numero DIA | FIN.MES | PROX.LUN</pre>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="section-subtitle">Ejemplo de AST</h3>
+                    <div class="code-block">
+                        <pre>PROGRAMA
+└── SENT_CREAR_TAREA
+    ├── CRE.TAR
+    ├── "Documentar API"
+    └── PRIORIDAD
+        └── PRI.ALT</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fase 3: Analizador Semántico -->
+        <div class="section fade-up" id="semantico">
+            <h2 class="section-title"><i class="fas fa-bolt"></i> Fase 3: Analizador Semántico</h2>
+            <p>Verifica reglas de negocio como existencia de usuarios, sesiones activas, duplicados, fechas válidas y permisos.</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr><th>Regla</th><th>Descripción</th><th>Código</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>R1</td><td>No puede registrar un usuario dos veces</td><td>E001</td></tr>
+                        <tr><td>R2</td><td>Usuario debe existir antes de operar</td><td>E002</td></tr>
+                        <tr><td>R3</td><td>Requiere sesión activa para crear tareas</td><td>E003</td></tr>
+                        <tr><td>R8</td><td>No pueden existir tareas duplicadas</td><td>E006</td></tr>
+                        <tr><td>R13</td><td>Calificación entre 0 y 100</td><td>E011</td></tr>
+                        <tr><td>R14</td><td>Fecha límite no anterior a hoy</td><td>E012</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="code-block">
+                <pre>[ERROR SEMANTICO]
+   Código   : E002
+   Mensaje  : Usuario 'usuariofalso' no ha sido registrado
+   Regla violada: R2</pre>
+            </div>
+        </div>
+
+        <!-- Fase 4: Tabla de Símbolos -->
+        <div class="section fade-up" id="tabla">
+            <h2 class="section-title"><i class="fas fa-table"></i> Tabla de Símbolos</h2>
+            <p>Almacena toda la información de identificadores declarados durante la ejecución.</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr><th>Identificador</th><th>Categoría</th><th>Tipo</th><th>Estado</th><th>Asignado A</th><th>Línea</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>jperez</td><td>USUARIO</td><td>ROL.COORD</td><td>ACTIVO</td><td>—</td><td>1</td></tr>
+                        <tr><td>backend</td><td>GRUPO</td><td>GRP</td><td>PENDIENTE</td><td>jperez</td><td>3</td></tr>
+                        <tr><td>tarea_auth</td><td>TAREA</td><td>TAREA.IND</td><td>PENDIENTE</td><td>jperez</td><td>5</td></tr>
+                        <tr><td>tareas_urgentes</td><td>LISTA</td><td>LISTA</td><td>PENDIENTE</td><td>—</td><td>8</td></tr>
+                        <tr><td>vista_prioridad</td><td>VISTA</td><td>FILTRO</td><td>PENDIENTE</td><td>—</td><td>10</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Imágenes del Compilador + Demo -->
+        <div class="section fade-up" id="demo">
+            <h2 class="section-title"><i class="fas fa-image"></i> Imágenes del Compilador</h2>
+            
+            <div class="image-gallery">
+                <div class="compiler-img">
+                    <div class="img-placeholder">
+                        <i class="fas fa-terminal" style="font-size: 4rem;"></i>
+                    </div>
+                    <p><strong>Análisis Léxico</strong> — Tokenización y detección de errores</p>
+                </div>
+                <div class="compiler-img">
+                    <div class="img-placeholder">
+                        <i class="fas fa-diagram-project" style="font-size: 4rem;"></i>
+                    </div>
+                    <p><strong>Árbol Sintáctico (AST)</strong> — Representación jerárquica</p>
+                </div>
+                <div class="compiler-img">
+                    <div class="img-placeholder">
+                        <i class="fas fa-table" style="font-size: 4rem;"></i>
+                    </div>
+                    <p><strong>Tabla de Símbolos</strong> — Gestión de contexto</p>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">Demostración en Terminal</h3>
+            <div class="code-block">
+                <pre>$ python compilador.py proyecto.gst
+
+[LEX] ✅ 34 tokens reconocidos
+[SINTACTICO] ✅ AST construido correctamente
+[SEMANTICO] ✅ Todas las reglas cumplidas
+[TABLA] ✅ 7 símbolos registrados
+
+┌─────────────────────────────────────────┐
+│  COMPILACIÓN EXITOSA                    │
+│  Lenguaje de Gestión de Proyectos v1.0  │
+└─────────────────────────────────────────┘</pre>
+            </div>
+
+            <h3 class="section-subtitle">Ejecución paso a paso</h3>
+            <div class="code-block">
+                <pre>Paso 01 [AGREGAR   ] [USUARIO] 'jperez' tipo=ROL.COORD, Línea=1
+Paso 02 [ACTUALIZAR] 'jperez'.sesion: 'inactiva' → 'activa', Línea=2
+Paso 03 [AGREGAR   ] [TAREA] 'tarea_auth' tipo=TAREA.IND, Línea=5
+Paso 04 [ACTUALIZAR] 'tarea_auth'.asignado_a: '—' → 'jperez', Línea=6
+Paso 05 [AGREGAR   ] [LISTA] 'tareas_urgentes' creada, Línea=8</pre>
+            </div>
+        </div>
+
+        <!-- Repositorio -->
+        <div class="section fade-up">
+            <h2 class="section-title"><i class="fas fa-code-branch"></i> Repositorio del Proyecto</h2>
+            <p>El código fuente completo del compilador está disponible en GitHub:</p>
+            <ul style="margin-left: 2rem; margin-bottom: 1.5rem; margin-top: 0.5rem;">
+                <li><code class="inline-code">lexer.py</code> — Analizador léxico con tabla de tokens</li>
+                <li><code class="inline-code">parser.py</code> — Parser descendente recursivo y AST</li>
+                <li><code class="inline-code">semantic.py</code> — Analizador semántico y tabla de símbolos</li>
+                <li><code class="inline-code">tokens.json</code> — Definición de palabras reservadas</li>
+            </ul>
+            <a href="#" class="btn"><i class="fab fa-github"></i> Ver en GitHub</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Gestor Tareas · Lenguaje de Programación para Gestión de Proyectos</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Desarrollado para el curso de Compiladores · Todos los derechos reservados</p>
+    </footer>
+
+    <!-- Modal para Manual PDF -->
+    <div id="manualModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-pdf"></i> Manual de Referencia - Lenguaje de Gestión de Proyectos</h3>
+                <button class="close-modal" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe src="data:application/pdf;base64,JVBERi0xLjQKJcOkw7zDtsOfCjIgMCBvYmoKPDwvTGVuZ3RoIDMgMCBSL0ZpbHRlci9GbGF0ZURlY29kZT4+CnN0cmVhbQp4nO1dTY/bNhC961cIbA8JpEiKpGQH2CQoEKBI0WN72GsX3i4KFL2k//7DIfXh2LZnN2vsooGjWAw5fHwzHI5Im8//fPljK1PT1m3dmNbS/dTpVjf92HX9I8fHvm476UtdU9XdNy/t/dhqfeN1u3t+uXn5+t+XL39dP+jHtunt/R/G/jK+J/uw7X+Z+lEdrXn/sBOQeWp1K96PMPNhV99t7+/fN+1Hkb37evjSNt9l38a+6dr+3hdH2t/LcSk9Tm1n/U+q/e6F/B04YJZ/R+3YNDLSfO/2TqduHA8SHqA/zFvajvWwPPNpHv09yN46bDf2sR8fH+Tv7XgM81Trx7EdPwF+QB8ehoRqLx9yKbQCf+KxcT7wO87yhwPww2YOdRjYDv2HcG7qHix7uaAmLfNf+ZfIMqB+E62Nx/HgfrQvrn9K//0HeVNDv27oZwv9D6F/H/tW6qPttv9BoW9vzKbqfz/Qt1Z3o/SNsqrYjuR/eM/0L/OzUYzyuJ16XeuhhZ+PnVR1/WiH6bq7uhVz21oJ8xvd8s+eH65z+deQ9q/2J/BmF/ht8ny+PP+8gB/Qp/IDuf/yhO7N9Bzz87zI/PyE6QP9DdYr9Iv8l+dW6J/MH+bvZP4wfyfzh/k7mT/M38n8Yf5O5g/zdzIf+cP8ncwf5u9k/jB/J/OH+TuZP8zfyfxh/k7mD/N3Mn+YP4n+9sv//vYLSf5O5g/zdzJ/mL+T+cP8ncwf5u9k/jB/J/OH+TuZP8yfRH/7/3+n/7ckfyfzh/k7mT/M38n8Yf5O5g/zdzJ/mL+T+cP8ncwf5k+iv+3/v/3+wPwV9/P8BytV+zUKZW5kc3RyZWFtCmVuZG9iagoKMyAwIG9iago0MTYKZW5kb2JqCgo1IDAgb2JqCjw8L0xlbmd0aCA2IDAgUi9GaWx0ZXIvRmxhdGVEZWNvZGU+PgpzdHJlYW0KeJxVkM1qwzAMgO8+hQ47BEex7TjJYTDWHXYYu+0y2HYYbIWWsc2wty+VQwsdaH0Sj/QhlELpz1Y/KTXWfGABZ7MyqwU0m/KggAr2Wr/F4IcbHtCciNboNx/Mifj8uG/86Fm3Lw/D63/q/WdM6Yp4Y9jfrNeq6mngjrw0dF9YcBcbIxIeNo1y5Pmdt3RHLsWJ+FKMjqyIR8V+Id5PxCciL4iPiHdEH+1J1k8C/SsLvq+2+QMFaa+XvgS7S+b9YbZvll1yI34kfoqbZHxPPBNml2S/fpl9Mv2p92nQ/mXkP8P+SqwKZW5kc3RyZWFtCmVuZG9iagoKNiAwIG9iagoyMTUKZW5kb2JqCgo0IDAgb2JqCjw8L1R5cGUvUGFnZS9NZWRpYUJveFswIDAgNTk1IDg0Ml0KL1Jlc291cmNlczw8L0ZvbnQ8PC9GMSAxIDAgUj4+Pi9Db250ZW50cyA1IDAgUj4+CmVuZG9iagoKMSAwIG9iago8PC9UeXBlL0ZvbnQvU3VidHlwZS9UeXBlMS9CYXNlRm9udC9IZWx2ZXRpY2EvRW5jb2RpbmcvV2luQW5zaUVuY29kaW5nPj4KZW5kb2JqCgo3IDAgb2JqCjw8L1R5cGUvQ2F0YWxvZy9QYWdlcyA4IDAgUj4+CmVuZG9iagoKOCAwIG9iago8PC9UeXBlL1BhZ2VzL0NvdW50IDEwL0tpZHNbNCAwIFJdPj4KZW5kb2JqCgp4cmVmCjAgOQowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDA2NDUgMDAwMDAgbiAKMDAwMDAwMDAxOSAwMDAwMCBuIAowMDAwMDAwNTU3IDAwMDAwIG4gCjAwMDAwMDA2MjAgMDAwMDAgbiAKMDAwMDAwMDU3OCAwMDAwMCBuIAowMDAwMDAwNjI1IDAwMDAwIG4gCjAwMDAwMDA3MjUgMDAwMDAgbiAKMDAwMDAwMDc3MiAwMDAwMCBuIAp0cmFpbGVyCjw8L1NpemUgOS9Sb290IDcgMCBSPj4Kc3RhcnR4cmVmCjgzNwolJUVPRgo=" style="width:100%; height:100%;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animaciones al hacer scroll
+        const fadeElements = document.querySelectorAll('.fade-up');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Modal del manual
+        const modal = document.getElementById('manualModal');
+        const openBtn = document.getElementById('openManualBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+
+        openBtn.onclick = () => modal.style.display = 'flex';
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+        // Botón web del compilador
+        const webBtn = document.getElementById('openWebBtn');
+        webBtn.onclick = () => window.open('https://compilador-gestor-tareas.netlify.app', '_blank');
+    </script>
+</body>
+</html>
